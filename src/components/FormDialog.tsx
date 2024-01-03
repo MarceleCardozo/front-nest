@@ -94,8 +94,10 @@ export default function FormDialog({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancelar</Button>
-          <Button onClick={handleAgree}>
+          <Button onClick={handleClose} style={{ color: "black" }}>
+            Cancelar
+          </Button>
+          <Button onClick={handleAgree} style={{ color: "black" }}>
             {productToEdit ? "Salvar Alterações" : "Adicionar"}
           </Button>
         </DialogActions>
