@@ -1,3 +1,4 @@
+import React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -5,11 +6,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box"; // Importe o componente Box do Material-UI aqui
-import { ProductType } from "../store/modules/products/productsSlice";
+import Box from "@mui/material/Box";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+
+import { ProductType } from "../store/modules/products/productsSlice";
 
 interface BasicTableProps {
   data: ProductType[];
@@ -19,15 +21,15 @@ interface BasicTableProps {
 
 function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
   return (
-    <Box ml={10} mr={10}>
+    <Box ml={5} mr={5}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Nome</TableCell>
-              <TableCell>Descrição</TableCell>
-              <TableCell>Valor</TableCell>
-              <TableCell>Ações</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Nome</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Descrição</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Valor</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -48,7 +50,7 @@ function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
                       <DeleteIcon />
                     </IconButton>
                     <IconButton
-                      aria-label="delete"
+                      aria-label="edit"
                       onClick={() => handleEdit(product.id!)}
                     >
                       <EditIcon />

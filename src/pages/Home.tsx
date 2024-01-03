@@ -83,7 +83,12 @@ const Home: React.FC = () => {
             color="primary"
             aria-label="add"
             onClick={handleClickOpen}
-            style={{ position: "fixed", right: 16, bottom: 16 }}
+            style={{
+              position: "fixed",
+              right: 16,
+              bottom: 16,
+              backgroundColor: "black",
+            }}
           >
             <AddIcon />
           </Fab>
