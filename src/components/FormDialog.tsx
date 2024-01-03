@@ -41,7 +41,7 @@ export default function FormDialog({ product }: FormDialogProps) {
   return (
     <>
       <Fab
-        color="secondary"
+        color="primary"
         aria-label="add"
         onClick={handleClickOpen}
         style={{ position: "fixed", right: 16, bottom: 16 }}
