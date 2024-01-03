@@ -5,51 +5,61 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProductType } from "../store/modules/products/productsSlice";
-import AddIcon from "@mui/icons-material/Add";
-import { Fab } from "@mui/material";
 
 interface FormDialogProps {
   product: (product: ProductType) => void;
+  openModal: boolean;
+  closeModal: (arg: boolean) => void;
+  productToEdit?: ProductType;
 }
 
-export default function FormDialog({ product }: FormDialogProps) {
-  const [open, setOpen] = useState(false);
+export default function FormDialog({
+  product,
+  openModal,
+  closeModal,
+  productToEdit,
+}: FormDialogProps) {
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productValue, setProductValue] = useState("");
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  useEffect(() => {
+    if (productToEdit) {
+      setProductName(productToEdit.name);
+      setProductDescription(productToEdit.description);
+      setProductValue(productToEdit.value.toString());
+    }
+  }, [productToEdit]);
 
   const handleClose = () => {
-    setOpen(false);
+    closeModal(false);
   };
 
-  const handleSubscribe = () => {
+  const handleAgree = () => {
     product({
       name: productName,
       description: productDescription,
       value: productValue,
     });
 
-    handleClose();
+    clearStates();
+    closeModal(false);
   };
+
+  function clearStates() {
+    setProductName("");
+    setProductDescription("");
+    setProductValue("");
+  }
 
   return (
     <>
-      <Fab
-        color="primary"
-        aria-label="add"
-        onClick={handleClickOpen}
-        style={{ position: "fixed", right: 16, bottom: 16 }}
-      >
-        <AddIcon />
-      </Fab>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Adicionar Produto</DialogTitle>
+      <Dialog open={openModal} onClose={handleClose}>
+        <DialogTitle>
+          {productToEdit ? "Editar Produto" : "Adicionar Produto"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Por favor insira os detalhes do produto.
@@ -85,7 +95,9 @@ export default function FormDialog({ product }: FormDialogProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancelar</Button>
-          <Button onClick={handleSubscribe}>Adicionar</Button>
+          <Button onClick={handleAgree}>
+            {productToEdit ? "Salvar Alterações" : "Adicionar"}
+          </Button>
         </DialogActions>
       </Dialog>
     </>
