@@ -46,10 +46,11 @@ const Home: React.FC = () => {
     }
   }
 
-  async function editProduct(id: string) {
+  async function editProduct(id: string, updatedProduct: ProductType) {
     try {
       const response = await axios.patch(
-        `http://localhost:3000/products/${id}`
+        `http://localhost:3000/products/${id}`,
+        updatedProduct
       );
       console.log("Response:", response.data);
       getProducts();
