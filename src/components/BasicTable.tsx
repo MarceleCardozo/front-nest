@@ -38,8 +38,6 @@ function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
 
   const handleSaveEdit = () => {
     if (editedProduct) {
-      // Faça a lógica para salvar as alterações no servidor aqui
-      // Chame a função handleEdit passando o ID do produto editado e as alterações
       handleEdit(editedProduct.id!, editedProduct);
       setEditingProductId(null);
       setEditedProduct(null);

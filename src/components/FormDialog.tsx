@@ -49,10 +49,10 @@ export default function FormDialog({ product }: FormDialogProps) {
         <AddIcon />
       </Fab>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add Product</DialogTitle>
+        <DialogTitle>Adicionar Produto</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter the details of the product.
+            Por favor insira os detalhes do produto.
           </DialogContentText>
           <TextField
             autoFocus
