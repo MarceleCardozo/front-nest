@@ -66,7 +66,9 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <h1>Produtos</h1>
+      <h1 style={{ textAlign: "center", color: "#333", marginTop: "20px" }}>
+        PRODUTOS
+      </h1>
 
       {loading ? (
         <CircularProgress color="secondary" />
