@@ -73,7 +73,6 @@ const StyledTypography = styled(Typography)`
   display: flex;
   align-items: center;
   &::before {
-    content: "🔒";
     margin-right: 10px;
   }
 `;
@@ -94,8 +93,10 @@ const StyledAlert = styled(Alert)`
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [showError, setShowError] = useState(true);
+  const [signup, setSignup] = useState(false);
   const navigate = useNavigate();
 
   async function login() {
@@ -133,7 +134,9 @@ const Login: React.FC = () => {
   return (
     <StyledContainer>
       <StyledForm>
-        <StyledTypography variant="h4">LOGIN</StyledTypography>
+        <StyledTypography variant="h4">
+          {signup ? "CRIAR CONTA" : "LOGIN"}
+        </StyledTypography>
         {error && (
           <StyledAlert
             className={showError ? "fade-out" : ""}
@@ -151,6 +154,18 @@ const Login: React.FC = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
+
+        {signup && (
+          <StyledTextField
+            id="email"
+            label="Email"
+            variant="outlined"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        )}
+
         <StyledTextField
           id="password"
           label="Senha"
@@ -161,8 +176,22 @@ const Login: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <StyledButton variant="contained" fullWidth onClick={login}>
-          Entrar
+          {signup ? "Criar conta" : "Entrar"}
         </StyledButton>
+
+        <Typography
+          onClick={() => setSignup(!signup)}
+          sx={{
+            textDecoration: "underline",
+            cursor: "pointer",
+            mt: 2,
+          }}
+          variant="subtitle2"
+        >
+          {signup
+            ? "Já possui conta? Vá para Login"
+            : "Não tem conta? Cadastre-se"}
+        </Typography>
       </StyledForm>
     </StyledContainer>
   );
