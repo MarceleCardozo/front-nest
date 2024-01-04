@@ -105,7 +105,9 @@ const Login: React.FC = () => {
         password,
       });
 
-      if (response.status === 201) {
+      if (response.status === 200) {
+        localStorage.setItem("access_token", response.data.access_token);
+
         navigate("/");
       } else {
         setError("Login failed. Please check your credentials.");

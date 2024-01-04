@@ -5,6 +5,7 @@ import FormDialog from "../components/FormDialog";
 import { Box, CircularProgress, Fab } from "@mui/material";
 import { ProductType } from "../store/modules/products/productsSlice";
 import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
@@ -14,15 +15,32 @@ const Home: React.FC = () => {
   const [productToEdit, setProductToEdit] = useState<ProductType | undefined>(
     undefined
   );
+  const [token, setToken] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getProducts();
+    const storedToken = localStorage.getItem("access_token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      navigate("/login");
+    }
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      getProducts();
+    }
+  }, [token]);
 
   async function getProducts() {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:3000/products");
+      const response = await axios.get("http://localhost:3000/products", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setProducts(response.data);
       setLoading(false);
     } catch (error) {
@@ -35,10 +53,19 @@ const Home: React.FC = () => {
     if (typeAction === "edit") {
       await axios.patch(
         `http://localhost:3000/products/${productToEdit!.id}`,
-        product
+        product,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
     } else {
-      await axios.post("http://localhost:3000/products", product);
+      await axios.post("http://localhost:3000/products", product, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     }
 
     getProducts();
@@ -50,7 +77,11 @@ const Home: React.FC = () => {
 
     if (action === "delete") {
       if (window.confirm(`Tem certeza de que deseja excluir este produto?`)) {
-        await axios.delete(`http://localhost:3000/products/${id}`);
+        await axios.delete(`http://localhost:3000/products/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         getProducts();
       }
     } else {
