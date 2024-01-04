@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import BasicTable from "../components/BasicTable";
 import axios from "axios";
 import FormDialog from "../components/FormDialog";
-import { Box, CircularProgress, Fab } from "@mui/material";
+import { Box, CircularProgress, Fab, IconButton } from "@mui/material";
 import { ProductType } from "../store/modules/products/productsSlice";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 const Home: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
@@ -95,8 +96,22 @@ const Home: React.FC = () => {
     setOpen(true);
   };
 
+  const handleExit = () => {
+    localStorage.removeItem("access_token");
+    navigate("/login");
+    window.location.reload();
+  };
+
   return (
     <>
+      <IconButton
+        aria-label="delete"
+        style={{ position: "absolute", top: 0, right: 0 }}
+        onClick={handleExit}
+      >
+        <ExitToAppIcon fontSize="large" />
+      </IconButton>
+
       <h1 style={{ textAlign: "center", color: "#333", marginTop: "20px" }}>
         PRODUTOS
       </h1>
