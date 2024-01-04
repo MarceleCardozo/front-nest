@@ -1,6 +1,26 @@
-import React from "react";
-import { Button, TextField, Typography } from "@mui/material";
-import styled from "styled-components";
+import React, { useState } from "react";
+import { Alert, Button, TextField, Typography } from "@mui/material";
+import styled, { keyframes } from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`;
 
 const StyledContainer = styled.div`
   display: flex;
@@ -58,16 +78,76 @@ const StyledTypography = styled(Typography)`
   }
 `;
 
+const StyledAlert = styled(Alert)`
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  opacity: 0;
+  animation: ${fadeIn} 10s ease-in-out;
+
+  &.fade-out {
+    animation: ${fadeOut} 10s ease-in-out;
+  }
+`;
+
 const Login: React.FC = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [showError, setShowError] = useState(true);
+  const navigate = useNavigate();
+
+  async function login() {
+    try {
+      const response = await axios.post("http://localhost:3000/auth/login", {
+        username,
+        password,
+      });
+
+      if (response.status === 201) {
+        navigate("/");
+      } else {
+        setError("Login failed. Please check your credentials.");
+        setShowError(true);
+
+        setTimeout(() => {
+          setError("");
+          setShowError(false);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError("An error occurred while logging in. Please try again later.");
+      setShowError(true);
+
+      setTimeout(() => {
+        setError("");
+        setShowError(false);
+      }, 3000);
+    }
+  }
+
   return (
     <StyledContainer>
       <StyledForm>
         <StyledTypography variant="h4">LOGIN</StyledTypography>
+        {error && (
+          <StyledAlert
+            className={showError ? "fade-out" : ""}
+            variant="filled"
+            severity="error"
+          >
+            {error}
+          </StyledAlert>
+        )}
         <StyledTextField
           id="username"
           label="Username"
           variant="outlined"
           fullWidth
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <StyledTextField
           id="password"
@@ -75,8 +155,10 @@ const Login: React.FC = () => {
           variant="outlined"
           type="password"
           fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <StyledButton variant="contained" fullWidth>
+        <StyledButton variant="contained" fullWidth onClick={login}>
           Entrar
         </StyledButton>
       </StyledForm>
