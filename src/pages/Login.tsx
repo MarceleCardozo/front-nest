@@ -100,18 +100,29 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   async function login() {
-    try {
-      const response = await axios.post("http://localhost:3000/auth/login", {
-        username,
-        password,
-      });
+    if (!signup) {
+      try {
+        const response = await axios.post("http://localhost:3000/auth/login", {
+          username,
+          password,
+        });
 
-      if (response.status === 200) {
-        localStorage.setItem("access_token", response.data.access_token);
+        if (response.status === 200) {
+          localStorage.setItem("access_token", response.data.access_token);
 
-        navigate("/");
-      } else {
-        setError("Login failed. Please check your credentials.");
+          navigate("/");
+        } else {
+          setError("Login failed. Please check your credentials.");
+          setShowError(true);
+
+          setTimeout(() => {
+            setError("");
+            setShowError(false);
+          }, 3000);
+        }
+      } catch (error) {
+        console.error("Error during login:", error);
+        setError("An error occurred while logging in. Please try again later.");
         setShowError(true);
 
         setTimeout(() => {
@@ -119,15 +130,19 @@ const Login: React.FC = () => {
           setShowError(false);
         }, 3000);
       }
-    } catch (error) {
-      console.error("Error during login:", error);
-      setError("An error occurred while logging in. Please try again later.");
-      setShowError(true);
+    } else {
+      try {
+        const response = await axios.post("http://localhost:3000/users", {
+          username,
+          email,
+          password,
+        });
+        console.log(response);
 
-      setTimeout(() => {
-        setError("");
-        setShowError(false);
-      }, 3000);
+        setSignup(!signup);
+      } catch (error) {
+        console.error("Error during login:", error);
+      }
     }
   }
 
