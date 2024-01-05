@@ -3,12 +3,19 @@ import BasicTable from "../components/BasicTable";
 import axios from "axios";
 import FormDialog from "../components/FormDialog";
 import { Box, CircularProgress, Fab, IconButton } from "@mui/material";
-import { ProductType } from "../store/modules/products/productsSlice";
+import {
+  ProductType,
+  createProducts,
+  updateProducts,
+} from "../store/modules/products/productsSlice";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { useAppDispatch } from "../store/hooks";
 
 const Home: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(false);
   const [typeAction, setTypeAction] = useState("");
@@ -54,26 +61,19 @@ const Home: React.FC = () => {
   async function createOrUpdateProduct(product: ProductType) {
     try {
       if (typeAction === "edit") {
-        await axios.patch(
-          `http://localhost:3000/products/${productToEdit!.id}`,
-          product,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const response = await dispatch(
+          updateProducts({ productData: product, token: token! })
         );
+        console.log(response);
 
         setTypeAction("");
       } else {
-        await axios.post("http://localhost:3000/products", product, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await dispatch(
+          createProducts({ productData: product, token: token! })
+        );
+        console.log(response);
       }
 
-      // Aguarda a conclusão da criação ou atualização antes de obter os produtos
       await getProducts();
       setOpen(false);
     } catch (error) {

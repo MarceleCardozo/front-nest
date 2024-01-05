@@ -21,12 +21,14 @@ export default function FormDialog({
   closeModal,
   productToEdit,
 }: FormDialogProps) {
+  const [productID, setProductID] = useState("");
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productValue, setProductValue] = useState("");
 
   useEffect(() => {
     if (productToEdit) {
+      setProductID(productToEdit.id);
       setProductName(productToEdit.name);
       setProductDescription(productToEdit.description);
       setProductValue(productToEdit.value.toString());
@@ -39,6 +41,7 @@ export default function FormDialog({
 
   const handleAgree = () => {
     product({
+      id: productID,
       name: productName,
       description: productDescription,
       value: productValue,
