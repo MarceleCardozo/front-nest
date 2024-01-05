@@ -8,7 +8,7 @@ const persistConfig = {
   key: "front-nest",
   version: 1,
   storage,
-  whitelist: ["products"],
+  whitelist: ["products", "user"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

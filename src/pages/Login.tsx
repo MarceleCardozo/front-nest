@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Alert, Button, TextField, Typography } from "@mui/material";
 import styled, { keyframes } from "styled-components";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { loginUser, signupUser } from "../store/modules/user/userSlice";
+import { useAppDispatch } from "../store/hooks";
 
 const fadeIn = keyframes`
   from {
@@ -91,35 +92,22 @@ const StyledAlert = styled(Alert)`
 `;
 
 const Login: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [showError, setShowError] = useState(true);
   const [signup, setSignup] = useState(false);
-  const navigate = useNavigate();
 
   async function login() {
     if (!signup) {
       try {
-        const response = await axios.post("http://localhost:3000/auth/login", {
-          username,
-          password,
-        });
+        await dispatch(loginUser({ username, password }));
 
-        if (response.status === 200) {
-          localStorage.setItem("access_token", response.data.access_token);
-
-          navigate("/");
-        } else {
-          setError("Login failed. Please check your credentials.");
-          setShowError(true);
-
-          setTimeout(() => {
-            setError("");
-            setShowError(false);
-          }, 3000);
-        }
+        navigate("/");
       } catch (error) {
         console.error("Error during login:", error);
         setError("An error occurred while logging in. Please try again later.");
@@ -132,16 +120,14 @@ const Login: React.FC = () => {
       }
     } else {
       try {
-        const response = await axios.post("http://localhost:3000/users", {
-          username,
-          email,
-          password,
-        });
+        const response = await dispatch(
+          signupUser({ username, email, password })
+        );
         console.log(response);
 
         setSignup(!signup);
       } catch (error) {
-        console.error("Error during login:", error);
+        console.error("Error during signup:", error);
       }
     }
   }
