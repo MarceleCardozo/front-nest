@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,11 +7,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
-import { IconButton } from "@mui/material";
+import { IconButton, Pagination, useMediaQuery } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-
-import { ProductType } from "../store/modules/products/productsSlice";
 
 interface BasicTableProps {
   data: ProductType[];
@@ -18,10 +17,42 @@ interface BasicTableProps {
   handleEdit: (id: string) => void;
 }
 
+interface ProductType {
+  id: string;
+  name: string;
+  description: string;
+  value: number;
+}
+
 function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
+  const [page, setPage] = useState(1);
+  const isMobile = useMediaQuery("(max-width:600px)");
+  const isMedium = useMediaQuery("(max-width:960px)");
+  const rowsPerPage = isMobile ? 5 : isMedium ? 6 : 7;
+
+  const handleChangePage = (
+    _event: React.ChangeEvent<unknown>,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = Math.min(startIndex + rowsPerPage, data.length);
+
   return (
-    <Box ml={5} mr={5}>
-      <TableContainer component={Paper}>
+    <Box
+      ml={5}
+      mr={5}
+      mt={2}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
+      <TableContainer
+        component={Paper}
+        sx={{ overflowX: "auto", maxHeight: "70vh" }}
+      >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -32,9 +63,9 @@ function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((product) => (
+            {data.slice(startIndex, endIndex).map((product) => (
               <TableRow
-                key={product.name}
+                key={product.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell>{product.name}</TableCell>
@@ -44,13 +75,13 @@ function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
                   <div>
                     <IconButton
                       aria-label="delete"
-                      onClick={() => handleDelete(product.id!)}
+                      onClick={() => handleDelete(product.id)}
                     >
                       <DeleteIcon />
                     </IconButton>
                     <IconButton
                       aria-label="edit"
-                      onClick={() => handleEdit(product.id!)}
+                      onClick={() => handleEdit(product.id)}
                     >
                       <EditIcon />
                     </IconButton>
@@ -61,6 +92,13 @@ function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Pagination
+        sx={{ marginTop: "2%" }}
+        count={Math.ceil(data.length / rowsPerPage)}
+        page={page}
+        onChange={handleChangePage}
+      />
     </Box>
   );
 }
