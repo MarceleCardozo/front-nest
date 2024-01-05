@@ -6,6 +6,8 @@ import { Box, CircularProgress, Fab, IconButton } from "@mui/material";
 import {
   ProductType,
   createProducts,
+  deleteProducts,
+  listProducts,
   updateProducts,
 } from "../store/modules/products/productsSlice";
 import AddIcon from "@mui/icons-material/Add";
@@ -44,12 +46,9 @@ const Home: React.FC = () => {
   async function getProducts() {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:3000/products", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setProducts(response.data);
+      const response = await dispatch(listProducts(token!));
+
+      setProducts(response.payload);
       console.log(products);
       setLoading(false);
     } catch (error) {
@@ -86,11 +85,10 @@ const Home: React.FC = () => {
 
     if (action === "delete") {
       if (window.confirm(`Tem certeza de que deseja excluir este produto?`)) {
-        await axios.delete(`http://localhost:3000/products/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await dispatch(
+          deleteProducts({ productId: id, token: token! })
+        );
+        console.log(response);
         getProducts();
       }
     } else {
