@@ -10,18 +10,12 @@ import Box from "@mui/material/Box";
 import { IconButton, Pagination, useMediaQuery } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { ProductType } from "../store/modules/products/productsSlice";
 
 interface BasicTableProps {
   data: ProductType[];
   handleDelete: (id: string) => void;
   handleEdit: (id: string) => void;
-}
-
-interface ProductType {
-  id: string;
-  name: string;
-  description: string;
-  value: number;
 }
 
 function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
@@ -70,7 +64,7 @@ function BasicTable({ data, handleDelete, handleEdit }: BasicTableProps) {
               >
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.description}</TableCell>
-                <TableCell>{product.value}</TableCell>
+                <TableCell>R${product.value},00</TableCell>
                 <TableCell>
                   <div>
                     <IconButton

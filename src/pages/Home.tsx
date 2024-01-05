@@ -13,6 +13,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { useAppDispatch } from "../store/hooks";
+import SearchAppBar from "../components/SearchAppBar";
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -109,13 +110,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <IconButton
-        aria-label="delete"
-        style={{ position: "absolute", top: 0, right: 0 }}
-        onClick={handleExit}
-      >
-        <ExitToAppIcon fontSize="large" />
-      </IconButton>
+      <SearchAppBar handleExit={handleExit} />
 
       <h1 style={{ textAlign: "center", color: "#333", marginTop: "20px" }}>
         PRODUTOS
