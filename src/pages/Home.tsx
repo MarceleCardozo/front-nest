@@ -43,6 +43,7 @@ const Home: React.FC = () => {
         },
       });
       setProducts(response.data);
+      console.log(products);
       setLoading(false);
     } catch (error) {
       console.error("Erro ao obter produtos:", error);
@@ -51,26 +52,33 @@ const Home: React.FC = () => {
   }
 
   async function createOrUpdateProduct(product: ProductType) {
-    if (typeAction === "edit") {
-      await axios.patch(
-        `http://localhost:3000/products/${productToEdit!.id}`,
-        product,
-        {
+    try {
+      if (typeAction === "edit") {
+        await axios.patch(
+          `http://localhost:3000/products/${productToEdit!.id}`,
+          product,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setTypeAction("");
+      } else {
+        await axios.post("http://localhost:3000/products", product, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
-    } else {
-      await axios.post("http://localhost:3000/products", product, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
+        });
+      }
 
-    getProducts();
-    setOpen(false);
+      // Aguarda a conclusão da criação ou atualização antes de obter os produtos
+      await getProducts();
+      setOpen(false);
+    } catch (error) {
+      console.error("Erro ao criar/atualizar produto:", error);
+    }
   }
 
   async function handleActionsProduct(id: string, action: string) {
